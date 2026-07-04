@@ -4,7 +4,7 @@ import { auth } from "../firebase";
 import { socket } from "../socket";
 import Navbar from "../components/Navbar";
 
-const API = "https://chatme-qzee.onrender.com"; // ✅ LIVE BACKEND
+const API = process.env.REACT_APP_API_URL;
 
 function Chat() {
   const [users, setUsers] = useState([]);
@@ -15,38 +15,48 @@ function Chat() {
 
   // ===== Get logged-in user =====
   useEffect(() => {
-    auth.onAuthStateChanged((user) => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
         setCurrentUser(user);
-
-        // Register this user to socket server
         socket.emit("register_user", user.email);
-
-        // Fetch all users except yourself
-        fetchUsers(user.email);
       }
     });
+
+    return () => unsubscribe();
   }, []);
+
+  // ===== After currentUser is set, fetch users =====
+  useEffect(() => {
+    if (currentUser) {
+      fetchUsers(currentUser.email);
+    }
+  }, [currentUser]);
 
   // ===== Listen for realtime messages =====
   useEffect(() => {
     const handleReceive = (data) => {
-      setMessages((prev) => [...prev, data]);
+      if (
+        selectedUser &&
+        (data.senderEmail === selectedUser.email ||
+          data.receiverEmail === selectedUser.email)
+      ) {
+        setMessages((prev) => [...prev, data]);
+      }
     };
 
     socket.on("receive_message", handleReceive);
     return () => socket.off("receive_message", handleReceive);
-  }, []);
+  }, [selectedUser]);
 
-  // ===== Fetch users from backend =====
   const fetchUsers = async (email) => {
     const res = await fetch(`${API}/users`);
     const data = await res.json();
     setUsers(data.filter((u) => u.email !== email));
   };
 
-  // ===== Fetch old messages when user selected =====
   const fetchMessages = async (otherUser) => {
+    if (!currentUser) return;
+
     const res = await fetch(
       `${API}/messages?senderEmail=${currentUser.email}&receiverEmail=${otherUser.email}`
     );
@@ -54,9 +64,8 @@ function Chat() {
     setMessages(data);
   };
 
-  // ===== Send message =====
   const sendMessage = () => {
-    if (!message || !selectedUser) return;
+    if (!message || !selectedUser || !currentUser) return;
 
     socket.emit("send_message", {
       senderEmail: currentUser.email,
@@ -72,7 +81,6 @@ function Chat() {
       <Navbar />
 
       <div className="app" style={{ marginTop: "80px" }}>
-        {/* ===== Sidebar ===== */}
         <div className="sidebar">
           <div className="brand">💬 ChatMe</div>
 
@@ -91,7 +99,6 @@ function Chat() {
           ))}
         </div>
 
-        {/* ===== Chat Area ===== */}
         <div className="chat">
           {selectedUser ? (
             <>
@@ -104,7 +111,7 @@ function Chat() {
                   <div
                     key={i}
                     className={`message ${
-                      m.senderEmail === currentUser.email
+                      m.senderEmail === currentUser?.email
                         ? "sent"
                         : "received"
                     }`}

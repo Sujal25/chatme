@@ -5,6 +5,9 @@ import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { socket } from "../socket";
 import "./Login.css";
 
+// ✅ Use ENV variable
+const API = process.env.REACT_APP_API_URL;
+
 function Login() {
   const navigate = useNavigate();
 
@@ -20,15 +23,16 @@ function Login() {
       uid: user.uid,
     };
 
+    // Register socket user
     socket.emit("register_user", userData.email);
 
-    await fetch("https://chatme-qzee.onrender.com/save-user", {
+    // Save user to DB using ENV URL
+    await fetch(`${API}/save-user`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(userData),
     });
 
-    // After login go to chat page
     navigate("/chat");
   };
 

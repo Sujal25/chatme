@@ -7,13 +7,15 @@ function Profile() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    auth.onAuthStateChanged((u) => {
+    const unsubscribe = auth.onAuthStateChanged((u) => {
       if (u) setUser(u);
     });
+
+    return () => unsubscribe(); // ✅ important in production
   }, []);
 
-  const logout = () => {
-    auth.signOut();
+  const logout = async () => {
+    await auth.signOut();
     window.location.href = "/";
   };
 

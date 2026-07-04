@@ -11,9 +11,9 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Landing />} />
-        <Route path="/Login" element={<Login />} />
-        <Route path="/Chat" element={<Chat />} />
-        <Route path="/Profile" element={<Profile />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/chat" element={<Chat />} />
+        <Route path="/profile" element={<Profile />} />
       </Routes>
     </Router>
   );
