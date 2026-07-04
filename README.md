@@ -2,14 +2,25 @@
 
 A simple real-time chat application built using the MERN Stack. Users can register, log in securely, and exchange messages in real time.
 
+## 🚀 Live Demo
+
+**Frontend:** https://suziechatme.netlify.app/
+
+> **Note:** The frontend is deployed on Netlify. Full chat functionality requires the backend server and MongoDB connection.
+
+---
+
 ## Features
 
 - User Registration
 - User Login
 - JWT Authentication
 - Real-Time Messaging using Socket.IO
-- Password Encryption with Bcrypt
+- Password Encryption using Bcrypt
 - MongoDB Database
+- Responsive User Interface
+
+---
 
 ## Tech Stack
 
@@ -29,15 +40,19 @@ A simple real-time chat application built using the MERN Stack. Users can regist
 - MongoDB
 - Mongoose
 
+---
+
 ## Project Structure
 
-```
+```text
 chatme
 ├── client
 ├── server
-├── .gitignore
-└── README.md
+├── README.md
+└── .gitignore
 ```
+
+---
 
 ## Installation
 
@@ -62,6 +77,8 @@ cd ../client
 npm install
 ```
 
+---
+
 ## Environment Variables
 
 Create a `.env` file inside the `server` folder.
@@ -72,26 +89,30 @@ MONGODB_URI=your_mongodb_connection_string
 JWT_SECRET=your_secret_key
 ```
 
-## Run the Application
+---
 
-Start the backend:
+## Run the Project
+
+### Start the Backend
 
 ```bash
 cd server
 npm start
 ```
 
-Start the frontend:
+### Start the Frontend
 
 ```bash
 cd client
 npm start
 ```
 
-The application will be available at:
+Open your browser:
 
-- Frontend: `http://localhost:3000`
-- Backend: `http://localhost:5005`
+- Frontend: http://localhost:3000
+- Backend: http://localhost:5005
+
+---
 
 ## Future Improvements
 
@@ -99,9 +120,16 @@ The application will be available at:
 - Image Sharing
 - Online/Offline Status
 - Typing Indicator
+- Read Receipts
+
+---
 
 ## Author
 
 **Sujal Maurya**
 
 GitHub: https://github.com/Sujal25
+
+---
+
+⭐ If you like this project, consider giving it a star on GitHub.
